@@ -1,0 +1,131 @@
+//Stock Trading Platform
+
+//Create a simulated stock trading platform with features like market data, buying/selling stocks, and tracking portfolio performance.
+
+import java.util.*;
+
+class Room {
+    int roomNumber;
+    String category;
+    boolean isAvailable;
+    double price;
+
+    Room(int roomNumber, String category, double price) {
+        this.roomNumber = roomNumber;
+        this.category = category;
+        this.price = price;
+        this.isAvailable = true;
+    }
+}
+
+class Reservation {
+    String customerName;
+    int roomNumber;
+    String category;
+    double amountPaid;
+
+    Reservation(String customerName, int roomNumber, String category, double amountPaid) {
+        this.customerName = customerName;
+        this.roomNumber = roomNumber;
+        this.category = category;
+        this.amountPaid = amountPaid;
+    }
+}
+
+public class HotelReservationSystem {
+    static List<Room> rooms = new ArrayList<>();
+    static List<Reservation> reservations = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        initializeRooms();
+        while (true) {
+            System.out.println("\n--- HOTEL RESERVATION SYSTEM ---");
+            System.out.println("1. View Available Rooms");
+            System.out.println("2. Make Reservation");
+            System.out.println("3. View Booking Details");
+            System.out.println("4. Exit");
+            System.out.print("Select an option: ");
+            int choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1 -> viewAvailableRooms();
+                case 2 -> makeReservation();
+                case 3 -> viewBookingDetails();
+                case 4 -> {
+                    System.out.println("Thank you for using our system!");
+                    return;
+                }
+                default -> System.out.println("Invalid choice!");
+            }
+        }
+    }
+
+    static void initializeRooms() {
+        rooms.add(new Room(101, "Single", 1000));
+        rooms.add(new Room(102, "Double", 1800));
+        rooms.add(new Room(103, "Suite", 3000));
+        rooms.add(new Room(104, "Single", 1000));
+        rooms.add(new Room(105, "Double", 1800));
+    }
+
+    static void viewAvailableRooms() {
+        System.out.println("\nAvailable Rooms:");
+        for (Room room : rooms) {
+            if (room.isAvailable) {
+                System.out.printf("Room #%d - %s - Rs. %.2f\n", room.roomNumber, room.category, room.price);
+            }
+        }
+    }
+
+    static void makeReservation() {
+        viewAvailableRooms();
+        System.out.print("\nEnter your name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter room number to book: ");
+        int roomNumber = sc.nextInt();
+
+        Room selectedRoom = null;
+        for (Room room : rooms) {
+            if (room.roomNumber == roomNumber && room.isAvailable) {
+                selectedRoom = room;
+                break;
+            }
+        }
+
+        if (selectedRoom != null) {
+            // Simulate payment
+            System.out.println("Processing payment of Rs. " + selectedRoom.price + "...");
+            System.out.println("Payment successful!");
+
+            selectedRoom.isAvailable = false;
+            reservations.add(new Reservation(name, selectedRoom.roomNumber, selectedRoom.category, selectedRoom.price));
+            System.out.println("Room booked successfully for " + name + "!");
+        } else {
+            System.out.println("Room not available or invalid room number.");
+        }
+    }
+
+    static void viewBookingDetails() {
+        System.out.print("Enter your name to view booking: ");
+        String name = sc.nextLine();
+        boolean found = false;
+
+        for (Reservation res : reservations) {
+            if (res.customerName.equalsIgnoreCase(name)) {
+                System.out.println("\nBooking Details:");
+                System.out.println("Customer: " + res.customerName);
+                System.out.println("Room Number: " + res.roomNumber);
+                System.out.println("Category: " + res.category);
+                System.out.println("Amount Paid: Rs. " + res.amountPaid);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No booking found for " + name);
+        }
+    }
+}
